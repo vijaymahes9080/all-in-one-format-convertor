@@ -1,0 +1,43 @@
+:root {
+    /* Color Palette - Dark Theme (Default) */
+    --bg-page: #0f172a;
+    --bg-panel: rgba(30, 41, 59, 0.7);
+    --bg-card: rgba(51, 65, 85, 0.5);
+    
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-glow: rgba(99, 102, 241, 0.5);
+    
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    --border: rgba(148, 163, 184, 0.1);
+    
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    
+    --radius-lg: 24px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    
+    --shadow-glow: 0 0 20px var(--primary-glow);
+    --glass-blur: blur(12px);
+}
+
+[data-theme="light"] {
+    --bg-page: #f8fafc;
+    --bg-panel: rgba(255, 255, 255, 0.8);
+    --bg-card: rgba(241, 245, 249, 0.8);
+    
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    
+    --border: rgba(0, 0, 0, 0.1);
+}

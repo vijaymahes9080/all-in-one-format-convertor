@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniConvert | Professional All-in-One Format Converter</title>
+    <meta name="description"
+        content="Universal client-side file converter for Images, Video, Audio, Documents, and Data. Secure, private, and offline-capable.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Libraries (Defer loading to improve initial render) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+    <script>
+        // Set worker for PDF.js
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.pdfjsLib) {
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            }
+        });
+    </script>
+    <!-- FFmpeg.wasm will be loaded dynamically when needed -->
+</head>
+
+<body>
+
+    <div class="background-mesh"></div>
+
+    <header class="app-header">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <i class="ri-arrow-left-right-line"></i>
+            </div>
+            <div class="logo-text">
+                <h1>UniConvert</h1>
+                <span class="beta-tag">PRO</span>
+            </div>
+        </div>
+
+        <nav class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#supported">Formats</a>
+            <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">
+                <i class="ri-moon-line"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="main-container">
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Convert <span class="gradient-text">Anything</span> to <span
+                    class="gradient-text">Everything</span></h1>
+            <p class="hero-subtitle">Secure, Client-Side, Universal File Converter. Your files never leave your device.
+            </p>
+        </section>
+
+        <!-- Converter App Interface -->
+        <section class="converter-interface glass-panel">
+
+            <!-- Upload Zone -->
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-content">
+                    <div class="upload-icon-wrapper">
+                        <i class="ri-upload-cloud-2-line"></i>
+                    </div>
+                    <h3>Drag & Drop files here</h3>
+                    <p>or click to browse</p>
+                    <button class="btn btn-primary" id="browse-btn">Select Files</button>
+                    <input type="file" id="file-input" multiple hidden>
+                </div>
+                <!-- Mini format badges -->
+                <div class="scrolling-badges-container">
+                    <div class="scrolling-badges">
+                        <span>JPG</span><span>PNG</span><span>MP4</span><span>PDF</span><span>DOCX</span><span>XLSX</span><span>WEBP</span><span>MP3</span>
+                        <span>JPG</span><span>PNG</span><span>MP4</span><span>PDF</span><span>DOCX</span><span>XLSX</span><span>WEBP</span><span>MP3</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard (Hidden initially) -->
+            <div id="conversion-dashboard" class="conversion-dashboard hidden">
+                <div class="dashboard-header">
+                    <h2>Your Files <span id="file-count-badge" class="badge">0</span></h2>
+                    <div class="global-actions">
+                        <button class="btn btn-text" id="clear-all-btn">Clear All</button>
+                        <button class="btn btn-primary glow" id="convert-all-btn">Convert All</button>
+                    </div>
+                </div>
+
+                <div id="file-list" class="file-list">
+                    <!-- File items will be injected here via JS -->
+                    <!-- Example Item Structure (for reference)
+                    <div class="file-item">
+                        <div class="file-icon"><i class="ri-image-line"></i></div>
+                        <div class="file-info">
+                            <div class="file-name">image_01.jpg</div>
+                            <div class="file-meta">2.4 MB • 1920x1080</div>
+                        </div>
+                        <div class="conversion-controls">
+                            <span class="arrow">→</span>
+                            <select class="format-select">
+                                <option>PNG</option>
+                                <option>WEBP</option>
+                            </select>
+                        </div>
+                        <div class="file-status">
+                            <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+                        </div>
+                        <button class="btn-icon remove-btn"><i class="ri-close-line"></i></button>
+                    </div> 
+                    -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-lock-2-line"></i></div>
+                <h3>100% Private</h3>
+                <p>All conversions happen directly in your browser. No files are uploaded to any server.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-wifi-off-line"></i></div>
+                <h3>Offline Capable</h3>
+                <p>Works without internet access. Install as a PWA and use anywhere.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-speed-up-line"></i></div>
+                <h3>Lightning Fast</h3>
+                <p>Leverages WebAssembly and multi-threading for rapid file processing.</p>
+            </div>
+        </section>
+
+        <!-- Supported Formats -->
+        <section id="supported" class="glass-panel" style="text-align: center; margin-bottom: 4rem;">
+            <h2>Supported Formats</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">We support over 30+ file combinations</p>
+            <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+                <div><i class="ri-image-line" style="font-size: 2rem; color: var(--primary);"></i>
+                    <p>Images</p>
+                </div>
+                <div><i class="ri-file-text-line" style="font-size: 2rem; color: var(--success);"></i>
+                    <p>Docs</p>
+                </div>
+                <div><i class="ri-video-line" style="font-size: 2rem; color: var(--warning);"></i>
+                    <p>Video</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2026 UniConvert. Runs locally in your browser.</p>
+        <div class="status-indicators">
+            <span class="status-item"><i class="ri-wifi-line"></i> <span id="network-status">Online</span></span>
+            <span class="status-item"><i class="ri-cpu-line"></i> <span id="memory-status">Memory OK</span></span>
+        </div>
+    </footer>
+
+    <!-- Templates for JS -->
+    <template id="file-item-template">
+        <div class="file-item fade-in-up">
+            <div class="file-preview">
+                <div class="file-icon-wrapper">
+                    <!-- Icon or Thumbnail -->
+                </div>
+            </div>
+
+            <div class="file-details">
+                <div class="file-header">
+                    <span class="file-name">filename.ext</span>
+                    <span class="file-size">0 KB</span>
+                </div>
+                <div class="file-meta-tags">
+                    <!-- e.g. "Image", "1920x1080" -->
+                </div>
+            </div>
+
+            <div class="conversion-settings">
+                <div class="quality-control hidden"
+                    style="display:flex; align-items:center; gap:5px; margin-right:10px;">
+                    <label style="font-size:0.75rem; color:var(--text-muted);">Quality:</label>
+                    <input type="range" class="quality-slider" min="0.1" max="1.0" step="0.1" value="0.9"
+                        title="Compression Level: Lower is smaller file size"
+                        style="width:60px; accent-color: var(--primary);">
+                    <span class="quality-value" style="font-size:0.7rem; min-width:25px;">90%</span>
+                </div>
+                <div class="size-control hidden" style="display:flex; align-items:center; gap:5px; margin-right:10px;">
+                    <label style="font-size:0.75rem; color:var(--text-muted);">OR Max Size:</label>
+                    <input type="number" class="max-size-input" placeholder="KB"
+                        style="width:60px; font-size:0.8rem; padding:4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text);"
+                        title="Target file size in KB (Overrides Quality)">
+                </div>
+                <div class="percentage-control hidden"
+                    style="display:flex; align-items:center; gap:5px; margin-right:10px;">
+                    <label style="font-size:0.75rem; color:var(--text-muted);">OR %:</label>
+                    <input type="number" class="percent-input" placeholder="%" min="1" max="100"
+                        style="width:45px; font-size:0.8rem; padding:4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text);"
+                        title="Target size as % of original">
+                </div>
+                <label>Convert to:</label>
+                <div class="select-wrapper">
+                    <select class="target-format">
+                        <!-- Options populated by JS -->
+                    </select>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+            </div>
+
+            <div class="action-area">
+                <div class="progress-container hidden">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span class="progress-text">0%</span>
+                </div>
+
+                <div class="buttons">
+                    <button class="btn-icon convert-btn" title="Start Conversion"><i class="ri-play-fill"></i></button>
+                    <button class="btn-icon download-btn hidden" title="Download"><i
+                            class="ri-download-line"></i></button>
+                    <button class="btn-icon remove-btn" title="Remove"><i class="ri-close-line"></i></button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registered'))
+                    .catch(err => console.log('SW failed', err));
+            });
+        }
+    </script>
+</body>
+
+</html>
