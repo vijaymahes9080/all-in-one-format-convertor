@@ -8,6 +8,20 @@
 
 let ffmpeg = null;
 
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        if (window.FFmpeg) {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = () => resolve();
+        script.onerror = (err) => reject(err);
+        document.head.appendChild(script);
+    });
+}
+
 export async function initFFmpeg() {
     if (ffmpeg) return ffmpeg;
 
@@ -20,12 +34,19 @@ export async function initFFmpeg() {
     }
 
     try {
+        if (!window.FFmpeg) {
+            await loadScript('https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js');
+        }
+
         // Dynamic import or check global
         // Assuming FFmpeg is loaded via script tag (v0.10 or v0.11 usually exposes createFFmpeg)
         const { createFFmpeg, fetchFile } = window.FFmpeg;
         if (!createFFmpeg) throw new Error("FFmpeg library not found");
 
-        ffmpeg = createFFmpeg({ log: true });
+        ffmpeg = createFFmpeg({
+            log: true,
+            corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
+        });
         await ffmpeg.load();
         return ffmpeg;
     } catch (e) {

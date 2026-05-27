@@ -256,11 +256,36 @@
     <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
+            const coiReload = {
+                coepCredentialless: () => !(window.chrome || window.netscape),
+                doReload: () => window.location.reload()
+            };
+
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW registered'))
-                    .catch(err => console.log('SW failed', err));
+                    .then(reg => {
+                        console.log('SW registered successfully');
+
+                        // If registration is active but not yet controlling, reload to enable crossOriginIsolated
+                        if (reg.active && !navigator.serviceWorker.controller) {
+                            console.log("Reloading page to apply COOP/COEP Service Worker.");
+                            coiReload.doReload();
+                        }
+
+                        reg.addEventListener("updatefound", () => {
+                            console.log("Reloading page to apply updated COOP/COEP Service Worker.");
+                            coiReload.doReload();
+                        });
+                    })
+                    .catch(err => console.error('SW registration failed:', err));
             });
+
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: "coepCredentialless",
+                    value: coiReload.coepCredentialless(),
+                });
+            }
         }
     </script>
 </body>
